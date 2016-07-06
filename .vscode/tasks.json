@@ -14,14 +14,14 @@
 		"args": [
 			"build",
 			"-o",
-			"${workspaceRoot}\\out\\dash.exe"
+			"${workspaceRoot}\\out\\dashboard.exe"
 		]
 	},
 	"linux": {
 		"args": [
 			"build",
 			"-o",
-			"${workspaceRoot}\\out\\dash"
+			"${workspaceRoot}\\out\\dashboard"
 		]
 	},
 	"problemMatcher": {

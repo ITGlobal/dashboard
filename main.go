@@ -8,6 +8,9 @@ import (
 	"os"
 
 	dash "github.com/itglobal/dashboard/api"
+
+	_ "expvar"
+	"net/http"
 )
 
 // Import providers
@@ -61,6 +64,9 @@ func disableConsoleLog() {
 
 func main() {
 	flag.Parse()
+	go func() {
+		http.ListenAndServe(":8080", nil)
+	}()
 
 	setupLog()
 
