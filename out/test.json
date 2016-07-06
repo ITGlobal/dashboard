@@ -1,0 +1,11 @@
+{
+    "theme": {
+        "style": "single",
+        "colors": "dark"
+    },
+    "providers": [
+        {
+            "type": "sim"
+        }
+    ]
+}
