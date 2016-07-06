@@ -18,7 +18,8 @@ import (
 	_ "github.com/itglobal/dashboard/providers/teamcity"
 )
 
-var Version = "0.0.0.0"
+var Version = ""
+var BuildConfiguration = ""
 
 var logFileName = defaultLogFileName
 
@@ -63,7 +64,7 @@ func main() {
 
 	setupLog()
 
-	log.Printf("[dash] Dashboard by IT Global LLC, v%s\n", Version)
+	log.Printf("[dash] Dashboard by IT Global LLC %s %s\n", Version, BuildConfiguration)
 
 	// Read config
 	log.Printf("[dash] reading config file '%s'", configFileName)
