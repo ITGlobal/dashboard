@@ -7,23 +7,9 @@
 // ${cwd}: the current working directory of the spawned process
 {
 	"version": "0.1.0",
-	"command": "go",
+	"command": "build",
 	"isShellCommand": true,
 	"showOutput": "always",
-	"windows": {
-		"args": [
-			"build",
-			"-o",
-			"${workspaceRoot}\\out\\dashboard.exe"
-		]
-	},
-	"linux": {
-		"args": [
-			"build",
-			"-o",
-			"${workspaceRoot}\\out\\dashboard"
-		]
-	},
 	"problemMatcher": {
 		"owner": "go",
 		"fileLocation": [

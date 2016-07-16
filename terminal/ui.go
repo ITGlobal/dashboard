@@ -2,10 +2,6 @@ package main
 
 import (
 	"log"
-	"sort"
-	"strings"
-
-	dash "github.com/itglobal/dashboard/api"
 
 	"github.com/nsf/termbox-go"
 )
@@ -89,8 +85,8 @@ func calcItemWidth(w int) int {
 }
 
 func renderLayout(width int) {
-	itemsByProviderLock.Lock()
-	defer itemsByProviderLock.Unlock()
+	itemsLock.Lock()
+	defer itemsLock.Unlock()
 
 	i := 0
 	y := 0
@@ -99,62 +95,22 @@ func renderLayout(width int) {
 	itemCount := width / itemWidth
 	itemHeight := 7
 	extraWidthForLast := width - itemCount*itemWidth
-	sortedProviders := sortProviders(itemsByProvider)
 
-	for _, items := range sortedProviders {
-		sortedItems := sortItems(items)
-		for _, item := range sortedItems {
-			currentItemWidth := itemWidth
-			if i == itemCount-1 {
-				currentItemWidth += extraWidthForLast
-			}
-
-			renderer := NewItemRenderer(i*itemWidth, y, currentItemWidth, itemHeight)
-			RenderCell(item, renderer)
-
-			if i == itemCount-1 {
-				i = 0
-				y += itemHeight
-				continue
-			}
-
-			i++
+	for _, item := range items {
+		currentItemWidth := itemWidth
+		if i == itemCount-1 {
+			currentItemWidth += extraWidthForLast
 		}
-	}
-}
 
-func sortProviders(m map[string][]*dash.Item) [][]*dash.Item {
-	keys := make([]string, len(m))
-	i := 0
-	for key := range m {
-		keys[i] = key
+		renderer := NewItemRenderer(i*itemWidth, y, currentItemWidth, itemHeight)
+		RenderCell(&item, renderer)
+
+		if i == itemCount-1 {
+			i = 0
+			y += itemHeight
+			continue
+		}
+
 		i++
 	}
-	sort.Strings(keys)
-
-	result := make([][]*dash.Item, len(keys))
-	for i, key := range keys {
-		result[i] = m[key]
-	}
-	return result
-}
-
-type sortedDashItems []*dash.Item
-
-func (array sortedDashItems) Len() int {
-	return len(array)
-}
-
-func (array sortedDashItems) Swap(i, j int) {
-	array[i], array[j] = array[j], array[i]
-}
-
-func (array sortedDashItems) Less(i, j int) bool {
-	return strings.Compare(array[i].Key, array[j].Key) < 0
-}
-
-func sortItems(items []*dash.Item) []*dash.Item {
-	sortable := sortedDashItems(items)
-	sort.Sort(sortable)
-	return sortable
 }

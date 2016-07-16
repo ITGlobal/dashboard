@@ -1,0 +1,26 @@
+#!/bin/bash
+if [[ $1 == "start" ]]; then
+  $DASH_DIR/dashd -addr 0.0.0.0:$DASH_PORT -config $DASH_DIR/dash.json -log $DASH_DIR/dashd.log &
+  exit 0
+fi
+
+if [[ $1 == "stop" ]]; then
+  killall dashd
+  exit 0
+fi
+
+if [[ $1 == "restart" ]]; then
+  dashctl stop
+  dashctl start
+  exit 0
+fi
+
+if [[ $1 == "terminal" ]]; then
+  $DASH_DIR/dasht -url http://127.0.0.1:$DASH_PORT -style single -colors dark
+  exit 0
+fi
+
+echo "dashctl: wrong command!"
+echo "usage:"
+echo "dashctl start|stop|restart|terminal"
+exit 1

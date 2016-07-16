@@ -7,15 +7,10 @@ import (
 	dash "github.com/itglobal/dashboard/api"
 )
 
-// Maps provider keys to list of provider's items
-var itemsByProvider = make(map[string][]*dash.Item)
-
-// A mutex for itemsByProvider
-var itemsByProviderLock = sync.Mutex{}
-
+var items []dash.Item
+var itemsLock = sync.Mutex{}
 var drawRequestChan = make(chan int)
 
-// Issues a redraw request (non-blocking)
 func requestDraw() {
 	go func() {
 		timerStateLock.Lock()
@@ -27,18 +22,16 @@ func requestDraw() {
 	}()
 }
 
-// Callback is a function to push updates from data providers into the UI loop
-func Callback(provider dash.Provider, items []*dash.Item) {
-	updateProviderData(provider, items)
-	//	log.Printf("[dash] Provider updated: '%s'", provider.Key())
+func Callback(is []dash.Item) {
+	updateData(is)
 	requestDraw()
 }
 
-func updateProviderData(provider dash.Provider, items []*dash.Item) {
-	itemsByProviderLock.Lock()
-	defer itemsByProviderLock.Unlock()
+func updateData(is []dash.Item) {
+	itemsLock.Lock()
+	defer itemsLock.Unlock()
 
-	itemsByProvider[provider.Key()] = items
+	items = is
 }
 
 var timerState = tsIdle
