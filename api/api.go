@@ -19,23 +19,31 @@ const (
 // Item is a dashboard item
 type Item struct {
 	// A provider key
-	ProviderKey string
+	ProviderKey string `json:"provider"`
 
 	// A item key
-	Key string
+	Key string `json:"key"`
 
 	// Item title
-	Name string
+	Name string `json:"name"`
 
 	// Item status
-	Status ItemStatus
+	Status ItemStatus `json:"status"`
 
 	// Item status text
-	StatusText string
+	StatusText string `json:"text"`
 
 	// Progress value. This field is applicable only to items with status of StatusPending.
 	// If this field has value of NoProgress then progress value is not used
-	Progress int
+	Progress int `json:"progress"`
+}
+
+// ItemList is a list of items with version number
+type ItemList struct {
+	// Version is a number that is incremented with every update
+	Version uint `json:"version"`
+	// Dashboard items
+	Items []Item `json:"items"`
 }
 
 // NoProgress is a special value for field Progress of type Item
