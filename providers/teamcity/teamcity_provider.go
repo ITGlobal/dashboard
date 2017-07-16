@@ -2,86 +2,72 @@ package teamcity
 
 import (
 	"fmt"
-	"log"
-	"sort"
 	"time"
 
-	dash "github.com/itglobal/dashboard/api"
-
+	"github.com/itglobal/dashboard/tile"
 	"github.com/kapitanov/go-teamcity"
+	log "github.com/kpango/glg"
+	uuid "github.com/satori/go.uuid"
 )
 
-const key = "teamcity"
+type teamcityDataItem struct {
+	ID              tile.ID
+	BuildTypeID     string
+	Title           string
+	State           tile.State
+	DescriptionText string
+	HasProgress     bool
+	Progress        int
+}
 
-type teamcityData map[string]*dash.Item
+type teamcityData map[string]*teamcityDataItem
 
 type teamcityProvider struct {
-	callback       dash.Callback
-	teamcityClient teamcity.Client
-	fetchInterval  time.Duration
-	data           teamcityData
+	uid                string
+	teamcityClient     teamcity.Client
+	manager            tile.Manager
+	fetchInterval      time.Duration
+	itemsByID          map[tile.ID]*teamcityDataItem
+	itemsByBuildTypeID map[string]*teamcityDataItem
 }
 
-func (p *teamcityProvider) Key() string {
-	return key
+// Gets provider unique ID
+func (p *teamcityProvider) ID() string {
+	return p.uid
 }
 
-func factory(config dash.Config, callback dash.Callback) (dash.Provider, error) {
-	url, err := config.GetString("url")
-	if err != nil {
-		return nil, err
-	}
-
-	username := config.GetStringOrDefault("username", "")
-	password := config.GetStringOrDefault("password", "")
-
-	fetchInterval, err := time.ParseDuration(config.GetStringOrDefault("timer", "20s"))
-
-	p := new(teamcityProvider)
-	p.callback = callback
-
-	var auth teamcity.Authorizer
-	if username != "" && password != "" {
-		auth = teamcity.BasicAuth(username, password)
-	} else {
-		auth = teamcity.GuestAuth()
-	}
-
-	p.teamcityClient = teamcity.NewClient(url, auth)
-	p.fetchInterval = fetchInterval
-	p.data = make(teamcityData)
-
-	go p.run()
-
-	return p, nil
+// Gets provider type key
+func (p *teamcityProvider) Type() string {
+	return providerType
 }
 
-func init() {
-	dash.RegisterFactory(key, factory)
-}
-
-func (p *teamcityProvider) run() {
-	p.fetchProjects()
-	p.fetchBuilds()
-	p.fetchUnknownItems()
-	p.syncItems()
-
-	for {
-		time.Sleep(p.fetchInterval)
-
-		res, err := p.fetchBuilds()
-		if err != nil {
-			continue
-		}
-
-		if res == frGotNewProjects {
-			p.fetchProjects()
-			p.fetchBuilds()
-			p.fetchUnknownItems()
-		}
-
+// Initializes a provider
+func (p *teamcityProvider) Init() error {
+	// TODO drop old build types if they are not available va API
+	go func() {
+		p.fetchProjects()
+		p.fetchBuilds()
+		p.fetchUnknownItems()
 		p.syncItems()
-	}
+
+		for {
+			time.Sleep(p.fetchInterval)
+
+			res, err := p.fetchBuilds()
+			if err != nil {
+				continue
+			}
+
+			if res == frGotNewProjects {
+				p.fetchProjects()
+				p.fetchBuilds()
+				p.fetchUnknownItems()
+			}
+
+			p.syncItems()
+		}
+	}()
+	return nil
 }
 
 type fetchBuildsResult int
@@ -95,40 +81,34 @@ const (
 const fetchBuildsCount = 25
 
 func (p *teamcityProvider) fetchBuilds() (fetchBuildsResult, error) {
-	log.Printf("[teamcity] fetchBuilds")
-
 	// Fetch N last builds and put them into data container
 	builds, err := p.teamcityClient.GetBuilds(fetchBuildsCount)
 	if err != nil {
-		log.Printf("[teamcity] fetchBuilds -> frError %s", err)
+		log.Errorf("[teamcity] fetchBuilds -> frError %s", err)
 		return frError, err
 	}
 
 	// Scanning list of build in reverse order
 	for i := len(builds) - 1; i >= 0; i-- {
 		build := builds[i]
-		//for _, build := range builds {
-		item, exists := p.data[build.BuildTypeID]
+		item, exists := p.itemsByBuildTypeID[build.BuildTypeID]
 		if !exists {
 			// Got a project that was not fetched yet, need to refetch list of the projects
-			log.Printf("[teamcity] fetchBuilds -> frGotNewProjects (buildTypeId = '%s')", build.BuildTypeID)
+			log.Debugf("[teamcity] fetchBuilds -> frGotNewProjects (buildTypeId = '%s')", build.BuildTypeID)
 			return frGotNewProjects, nil
 		}
 
 		setupDashItem(&build, item)
 	}
 
-	log.Printf("[teamcity] fetchBuilds -> frOK")
 	return frOK, nil
 }
 
 func (p *teamcityProvider) fetchProjects() {
-	log.Printf("[teamcity] fetchProjects")
-
 	// Fetch list of projects
 	projects, err := p.teamcityClient.GetProjects()
 	if err != nil {
-		log.Printf("[teamcity] fetchProjects -> error! %s", err)
+		log.Errorf("[teamcity] fetchProjects -> error! %s", err)
 		return
 	}
 
@@ -139,56 +119,54 @@ func (p *teamcityProvider) fetchProjects() {
 }
 
 func (p *teamcityProvider) fetchBuildTypes(project *teamcity.Project) {
-	log.Printf("[teamcity] fetchBuildTypes(%s)", project.ID)
-
 	// Fetch a list of build types for a projects
 	buildTypes, err := p.teamcityClient.GetBuildTypesForProject(project.ID)
 	if err != nil {
-		log.Printf("[teamcity] fetchBuildTypes(%s) -> error! %s", project.ID, err)
+		log.Errorf("[teamcity] fetchBuildTypes(%s) -> error! %s", project.ID, err)
 		return
 	}
 
 	// For each build type - add a dashboard item if not exists
 	for _, buildType := range buildTypes {
-		item, exists := p.data[buildType.ID]
+		item, exists := p.itemsByBuildTypeID[buildType.ID]
 		if exists {
 			continue
 		}
 
-		item = &dash.Item{}
-		item.Key = buildType.ID
-		item.Name = buildType.Name
-		item.ProviderKey = key
-		item.Status = dash.StatusUnknown
-		item.StatusText = ""
-		item.Progress = 0
+		item = &teamcityDataItem{
+			ID:          tile.ID(uuid.NewV4().String()),
+			BuildTypeID: buildType.ID,
+			Title:       buildType.Name,
+			State:       tile.StateDefault,
+		}
 
-		p.data[buildType.ID] = item
+		p.itemsByID[item.ID] = item
+		p.itemsByBuildTypeID[buildType.ID] = item
 
-		log.Printf("[teamcity] fetchBuildTypes(%s): new dash item %s", project.ID, buildType.ID)
+		log.Debugf("[teamcity] fetchBuildTypes(%s): new item %s", project.ID, buildType.ID)
 	}
 }
 
 func (p *teamcityProvider) fetchUnknownItems() {
-	for id, item := range p.data {
-		if item.Status == dash.StatusUnknown {
-			p.fetchItemStatus(id, item)
+	for _, item := range p.itemsByBuildTypeID {
+		if item.State == tile.StateDefault {
+			p.fetchItemStatus(item)
 		}
 	}
 }
 
-func (p *teamcityProvider) fetchItemStatus(id string, item *dash.Item) {
-	builds, err := p.teamcityClient.GetBuildsForBuildType(id, 1)
+func (p *teamcityProvider) fetchItemStatus(item *teamcityDataItem) {
+	builds, err := p.teamcityClient.GetBuildsForBuildType(item.BuildTypeID, 1)
 	if err != nil {
-		log.Printf("[teamcity] fetchItemStatus(%s) -> error! %s", id, err)
+		log.Errorf("[teamcity] fetchItemStatus(%s) -> error! %s", item.BuildTypeID, err)
 		return
 	}
 
 	l := len(builds)
 	if l == 0 {
-		log.Printf("[teamcity] fetchItemStatus(%s) -> no builds are found", id)
-		item.Status = dash.StatusBad
-		item.StatusText = "No build are found"
+		log.Warnf("[teamcity] fetchItemStatus(%s) -> no builds are found", item.BuildTypeID)
+		item.State = tile.StateError
+		item.DescriptionText = "No build are found"
 		return
 	}
 
@@ -196,45 +174,51 @@ func (p *teamcityProvider) fetchItemStatus(id string, item *dash.Item) {
 }
 
 func (p *teamcityProvider) syncItems() {
-	items := make([]*dash.Item, len(p.data))
-	keys := make([]string, len(p.data))
+	u := p.manager.BeginUpdate(p)
+	defer u.EndUpdate()
 
-	i := 0
-	for key := range p.data {
-		keys[i] = key
-		i++
+	for _, t := range u.GetTiles() {
+		if _, exists := p.itemsByID[t.ID()]; !exists {
+			u.RemoveTile(t.ID())
+		}
 	}
 
-	sort.Strings(keys)
+	for _, item := range p.itemsByID {
+		t := u.AddOrUpdateTile(item.ID)
 
-	i = 0
-	for _, key := range keys {
-		items[i] = p.data[key]
-		i++
+		t.SetType(tile.TypeTextStatusProgress)
+		t.SetSize(tile.Size2x)
+		t.SetState(item.State)
+		t.SetTitleText(item.Title)
+		t.SetDescriptionText(item.DescriptionText)
+		if item.HasProgress {
+			t.SetStatusValue(item.Progress)
+		} else {
+			t.SetNoStatusValue()
+		}
 	}
-
-	p.callback(p, items)
 }
 
-func setupDashItem(build *teamcity.Build, item *dash.Item) {
+func setupDashItem(build *teamcity.Build, item *teamcityDataItem) {
 	if build.StatusText != "" {
-		item.StatusText = fmt.Sprintf("%s: %s", build.Number, build.StatusText)
+		item.DescriptionText = fmt.Sprintf("%s: %s", build.Number, build.StatusText)
 	} else {
-		item.StatusText = build.Number
+		item.DescriptionText = build.Number
 	}
 
 	switch build.Status {
 	case teamcity.StatusSuccess:
-		item.Status = dash.StatusGood
-		item.Progress = dash.NoProgress
+		item.State = tile.StateSuccess
+		item.HasProgress = false
 		break
 	case teamcity.StatusRunning:
-		item.Status = dash.StatusPending
+		item.State = tile.StateIndeterminate
 		item.Progress = build.Progress
+		item.HasProgress = true
 		break
 	case teamcity.StatusFailure:
-		item.Status = dash.StatusBad
-		item.Progress = dash.NoProgress
+		item.State = tile.StateError
+		item.HasProgress = false
 		break
 	}
 }

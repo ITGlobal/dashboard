@@ -1,0 +1,18 @@
+version: '2'
+services:
+  dashboard:
+    build: 
+      dockerfile: ./Dockerfile
+    image: itglobal/dashboard
+    container_name: dashboard
+    restart: always
+    
+    volumes: 
+      - ./config:/opt/dashboard
+
+    ports:
+      - 8000:8000
+
+    environment: 
+      - DASH_ENDPOINT=0.0.0.0:8000
+      - DASH_CONFIG=/opt/dashboard/dashboard.json
