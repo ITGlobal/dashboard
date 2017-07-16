@@ -3,6 +3,7 @@ services:
   dashboard:
     build: 
       dockerfile: ./Dockerfile
+      context: .
     image: itglobal/dashboard
     container_name: dashboard
     restart: always

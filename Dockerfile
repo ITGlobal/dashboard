@@ -1,4 +1,4 @@
-FROM golang:1.8-alpine
+FROM golang:1.8
 
 RUN mkdir -p /go/src/github.com/itglobal/dashboard
 WORKDIR /go/src/github.com/itglobal/dashboard
