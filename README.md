@@ -3,152 +3,125 @@ dashboard
 
 Dashboard app for Raspberry Pi
 
-![Preview](preview.png)
+How to configure, build and run
+-------------------------------
 
-Arhitechture
-------------
+1. Clone this repository somewhere (e.g. `~/dashboard`)
+2. Create configuration file `dashboard.json` in `config` directory. See below to find out about config file's format
 
-**Dashboard** consists of the following components:
+   *Note that this config file will be ignored by git*
+3. Make sure you have docker and docker-compose installed.
+4. Type a docker-compose command to build and run **dashboard**:
+```shell
+# for x64 machines
+docker-compose up -d
 
-* [**dashd**](/daemon/README.md) - a backend service running as a daemon
-* [**dasht**](/terminal/README.md) - a terminal client app that connects to **dashd**
+#  - or -
+# for ARM machines (like Raspberry Pi)
 
-Data providers
---------------
+docker-compose -f docker-compose.arm.yml up -d
 
-**Dashboard** supports different data providers:
+#  - or -
+# to run manually on linux
 
-* [`sim`](/providers/sim/README.md)
-* [`ping`](/providers/ping/README.md)
-* [`mongodb`](/providers/mongodb/README.md)
-* [`teamcity`](/providers/teamcity/README.md)
+chmod +x ./build.sh
+./run.sh
 
+#  - or -
+# to run manually on windows
 
-Compile
--------
+./run.cmd
+```
+5. Open `http://localhost:8000` to see dashboard page.
 
-### Prerequisites
+Configuration file format
+-------------------------
 
-* You will need a Go 1.5+ installed into your PATH
-* You will need a git client installed into your PATH
+Configuration file has the following format:
 
-### Compile on Linux
-
-Run command
-
-```bash
-./build.sh
+```json
+{
+  "providers" : [
+    // list of provider configurations
+  ]
+}
 ```
 
-to compile **dashboard** for your OS.
+Each item in `providers` array represents one tile provider, while each tile provider may generate one or few tiles.
 
-To cross-compile use commands like
+Common provider config has the following fields:
 
-```bash
-./build.sh windows 386
-./build.sh windows amd64
-./build.sh linux 386
-./build.sh linux amd64
-./build.sh linux arm
+```json
+{
+  "type" : "PROVIDER_TYPE",
+  "enabled" : true
+}
 ```
 
-### Compile on Windows
+Parameter `type` is required and should contain a valid provider type (see below), while parameter `enabled` is optional and defaults to `true`.
 
-Run command
+Dashboard tile providers
+------------------------
 
-```cmd
-build.cmd
-```
 
-to compile **dashboard** for your OS.
+## `sim` provider
 
-To cross-compile use commands like
+Simulated tile provider (for debugging purposes). Generated and updates `N` tiles.
 
-```cmd
-build.cmd windows 386
-build.cmd windows amd64
-build.cmd linux 386
-build.cmd linux amd64
-build.cmd linux arm
-```
+| Parameter | Type    | Is optional         | Description                 |
+|-----------|---------|---------------------|-----------------------------|
+| `count`   | integer | Yes, defaults to 10 | Amount of tiles to generate |
 
-Install
--------
 
-Here is a short guide how to get **dashboard** up and running on a Raspberry Pi:
+## `check` provider
 
-1. Define a couple of enviroment variables (add the following lines into the `~/.profile`):
+Periodially checks specified HTTP/HTTPS URL and displays its status.
 
-```bash
-# $DASH_DIR is a directory containing dashboard files - binaries, config and logs
-export DASH_DIR=/home/pi/dashboard
-# $DASH_PORT is a port number for dashd
-export DASH_PORT=8000
-export PATH=$PATH:$DASH_DIR
-```
+If the specified URL will respond to HTTP GET with any 2xx or 3xx HTTP status then the dashboard tile will be marked as `SUCCESS`.
+Otherwise, it will be marked as `ERROR`.
 
-2. Copy files `dashd`, `dasht`and `dashctl` into `DASH_DIR`
+| Parameter | Type   | Is optional                | Description        |
+|-----------|--------|----------------------------|--------------------|
+| `url`     | string | Required                   | URL to check       |
+| `name`    | string | Yes, defaults to host name | Tile name          |
+| `timer`   | string | Yes, defaults to `1m`      | URL check interval |
 
-```bash
-mkdir -p $DASH_DIR
+## `mongodb` provider
 
-cp dashd $DASH_DIR/dashd
-cp dasht $DASH_DIR/dasht
-cp dashctl $DASH_DIR/dashctl
+A provider that checks MongoDB replica status.
 
-chmod +x $DASH_DIR/dashd
-chmod +x $DASH_DIR/dasht
-chmod +x $DASH_DIR/dashctl
-```
+If all replica set nodes are healthy then the dashboard tile will be marked as `SUCCESS`.
+Otherwise, it will be marked as `ERROR`. 
 
-3. Create configuration file `dashd.json`:
+| Parameter | Type   | Is optional            | Description                        |
+|-----------|--------|------------------------|------------------------------------|
+| `name`    | string | Required               | Tile name                          |
+| `url`     | string | Required               | MongoDB replica set connection URL |
+| `timer`   | string | Yes, defaults to `20s` | MongoDB check interval             |
 
-```bash
-touch $DASH_DIR/dash.json
-echo "[]" >> $DASH_DIR/dash.json
-```
+## `teamcity` provider
 
-4. Define neccessary providers in `dash.json`
+A provider that displays statuses of TeamCity builds.
 
-5. Add the following script into `~/.profile`:
+Provider will populate one dashboard item for each TeamCity project which will indicate current build status.
 
-```bash
-export DASH_DIR=/home/pi/dashboard
-export DASH_PORT=8000
-export PATH=$PATH:$DASH_DIR
+| Parameter  | Type   | Is optional            | Description                   |
+|------------|--------|------------------------|-------------------------------|
+| `url`      | string | Required               | TeamCity URL                  |
+| `username` | string | Optional               | Username for TeamCity access  |
+| `password` | string | Optional               | Password for TeamCity access  |
+| `timer`    | string | Yes, defaults to `20s` | TeamCity build fetch interval |
 
-if [[ $(tty) == "/dev/tty1" ]]; then
-  dashctl start
-fi
 
-dashctl terminal
-```
+## `1cloud` provider
 
-Using dashctl script
---------------------
+A provider that checks 1Cloud payment status and displays a warning if remaining account balance drops below limit.
 
-Script `dashctl` provides the following commands:
+Provider uses 1Cloud's *paid util* estimation.
 
-1. Start a background **dashd** process:
-
-```bash
-dashctl start
-```
-
-2. Stop a background **dashd** process:
-
-```bash
-dashctl stop
-```
-
-3. Restart a background **dashd** process:
-
-```bash
-dashctl restart
-```
-
-4. Start a foreground **dasht** process:
-
-```bash
-dashctl terminal
-```
+| Parameter | Type   | Is optional                              | Description             |
+|-----------|--------|------------------------------------------|-------------------------|
+| `name`    | string | Required                                 | Tile name               |
+| `token`   | string | Required                                 | 1Cloud API access token |
+| `url`     | string | Yes, defaults to `https://api.1cloud.ru` | 1Cloud API URL          |
+| `timer`   | string | Yes, defaults to `60m`                   | Balance check interval  |

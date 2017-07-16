@@ -2,51 +2,66 @@ package mongodb
 
 import (
 	"fmt"
-	"log"
 	"time"
 
-	dash "github.com/itglobal/dashboard/api"
-
+	"github.com/itglobal/dashboard/tile"
+	log "github.com/kpango/glg"
 	"gopkg.in/mgo.v2"
 )
 
-const key = "mongodb"
-
 type mongodbProvider struct {
-	callback dash.Callback
-	name     string
-	url      string
-	interval time.Duration
-
-	item *dash.Item
+	id              tile.ID
+	manager         tile.Manager
+	interval        time.Duration
+	url             string
+	name            string
+	state           tile.State
+	descriptionText string
+	statusValue     int
 }
 
-func (p *mongodbProvider) Key() string {
-	return key
+// Gets provider unique ID
+func (p *mongodbProvider) ID() string {
+	return string(p.id)
 }
 
-func (p *mongodbProvider) init() {
-	item := new(dash.Item)
-	item.Key = p.name
-	item.ProviderKey = key
-	item.Name = p.name
-	item.Status = dash.StatusPending
-	item.StatusText = "?"
-	item.Progress = dash.NoProgress
-
-	p.item = item
-
-	p.update()
-	go p.loop()
+// Gets provider type key
+func (p *mongodbProvider) Type() string {
+	return providerType
 }
 
-func (p *mongodbProvider) loop() {
-	for {
-		p.update()
-		p.callback(p, []*dash.Item{p.item})
+// Initializes a provider
+func (p *mongodbProvider) Init() error {
+	p.state = tile.StateIndeterminate
+	p.descriptionText = ""
+	p.statusValue = 100
 
-		time.Sleep(p.interval)
-	}
+	p.syncTile()
+
+	go func() {
+		for {
+			p.update()
+			p.syncTile()
+
+			time.Sleep(p.interval)
+		}
+	}()
+
+	return nil
+}
+
+func (p *mongodbProvider) syncTile() {
+	u := p.manager.BeginUpdate(p)
+	defer u.EndUpdate()
+
+	t := u.AddOrUpdateTile(p.id)
+
+	t.SetType(tile.TypeTextStatusProgress)
+	t.SetSize(tile.Size1x)
+	t.SetTitleText(p.name)
+	t.SetState(p.state)
+	t.SetDescriptionText(p.descriptionText)
+	t.SetStatusValue(p.statusValue)
 }
 
 func (p *mongodbProvider) update() {
@@ -54,9 +69,10 @@ func (p *mongodbProvider) update() {
 	if err != nil {
 		log.Printf("[mongodb] %s: dial() failed: %s", p.name, err)
 
-		p.item.Status = dash.StatusBad
-		p.item.StatusText = fmt.Sprintf("dial(): %s", err)
-		p.item.Progress = dash.NoProgress
+		p.state = tile.StateError
+		p.descriptionText = fmt.Sprintf("dial(): %s", err)
+		p.statusValue = 0
+
 		return
 	}
 
@@ -67,9 +83,9 @@ func (p *mongodbProvider) update() {
 	if err != nil {
 		log.Printf("[mongodb] %s: r.status() failed: %s", p.name, err)
 
-		p.item.Status = dash.StatusBad
-		p.item.StatusText = fmt.Sprintf("rs.status(): %s", err)
-		p.item.Progress = dash.NoProgress
+		p.state = tile.StateError
+		p.descriptionText = fmt.Sprintf("rs.status(): %s", err)
+		p.statusValue = 0
 		return
 	}
 
@@ -83,18 +99,18 @@ func (p *mongodbProvider) update() {
 	log.Printf("[mongodb] %s: %d/%d nodes are healthy", p.name, alive, len(result.Members))
 
 	if alive == len(result.Members) {
-		p.item.Status = dash.StatusGood
-		p.item.StatusText = "All nodes are healthy"
-		p.item.Progress = 100
+		p.state = tile.StateSuccess
+		p.descriptionText = "All nodes are healthy"
+		p.statusValue = 100
 
 		return
 	}
 
 	health := float64(100) * float64(alive) / float64(len(result.Members))
 
-	p.item.Status = dash.StatusBad
-	p.item.StatusText = fmt.Sprintf("%d/%d nodes are healthy", alive, len(result.Members))
-	p.item.Progress = int(health)
+	p.state = tile.StateWarning
+	p.descriptionText = fmt.Sprintf("%d/%d nodes are healthy", alive, len(result.Members))
+	p.statusValue = int(health)
 }
 
 type replStatus struct {
@@ -105,35 +121,4 @@ type replStatus struct {
 type replMember struct {
 	Name   string `bson:"name"`
 	Health int    `bson:"health"`
-}
-
-func factory(config dash.Config, callback dash.Callback) (dash.Provider, error) {
-	url, err := config.GetString("url")
-	if err != nil {
-		return nil, err
-	}
-
-	name, err := config.GetString("name")
-	if err != nil {
-		return nil, err
-	}
-
-	interval, err := time.ParseDuration(config.GetStringOrDefault("timer", "30s"))
-	if err != nil {
-		return nil, err
-	}
-
-	p := new(mongodbProvider)
-	p.callback = callback
-	p.name = name
-	p.url = url
-	p.interval = interval
-
-	p.init()
-
-	return p, nil
-}
-
-func init() {
-	dash.RegisterFactory(key, factory)
 }

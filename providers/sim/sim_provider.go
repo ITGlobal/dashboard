@@ -2,108 +2,111 @@ package sim
 
 import (
 	"fmt"
-	"math/rand"
 	"time"
 
-	dash "github.com/itglobal/dashboard/api"
+	"github.com/itglobal/dashboard/tile"
 )
-
-const key = "sim"
 
 const animStepDuration = 1 * time.Second
 const stateStepDuration = 5 * time.Second
 
 type simProvider struct {
-	items    []*dash.Item
-	callback dash.Callback
+	uid     string
+	ids     []tile.ID
+	manager tile.Manager
 }
 
-func (p *simProvider) Key() string {
-	return key
+// Gets provider unique ID
+func (p *simProvider) ID() string {
+	return p.uid
 }
 
-func (p *simProvider) init() {
-	for _, item := range p.items {
-		j := rand.Int()
-		item.ProviderKey = key
-		item.Key = fmt.Sprintf("%s_%d", key, j)
-		item.Name = fmt.Sprintf("generated item %d", j)
-		item.Progress = dash.NoProgress
-		item.Status = dash.StatusBad
-		item.StatusText = ""
+// Gets provider type key
+func (p *simProvider) Type() string {
+	return providerType
+}
+
+// Initializes a provider
+func (p *simProvider) Init() error {
+	op := p.manager.BeginUpdate(p)
+
+	for i := 0; i < len(p.ids); i++ {
+		p.ids[i] = tile.ID(newUID())
+
+		t := op.AddOrUpdateTile(p.ids[i])
+
+		t.SetType(tile.TypeTextStatusProgress)
+		t.SetSize(tile.Size2x)
+		t.SetState(tile.StateError)
+		t.Clear()
+		t.SetTitleText(fmt.Sprintf("generated item %d", i))
 	}
 
-	go p.loop()
-}
+	op.EndUpdate()
 
-func (p *simProvider) loop() {
-	for index, item := range p.items {
-		go p.animate(item, index)
+	for i, id := range p.ids {
+		go p.animate(i, id)
 	}
+
+	return nil
 }
 
-type animation func(item *dash.Item, callback func())
+type animationFunc func(p *simProvider, id tile.ID)
 
-func pendingAnimation(item *dash.Item, callback func()) {
+func pendingAnimation(p *simProvider, id tile.ID) {
 	for progress := 0; progress <= 100; progress += 10 {
-		item.Status = dash.StatusPending
-		item.Progress = progress
-		item.StatusText = fmt.Sprintf("Running (%d%%)", progress)
 
-		callback()
+		op := p.manager.BeginUpdate(p)
+
+		t := op.AddOrUpdateTile(id)
+		t.Clear()
+		t.SetState(tile.StateIndeterminate)
+		t.SetDescriptionText(fmt.Sprintf("Running (%d%%)", progress))
+		t.SetStatusValue(progress)
+
+		op.EndUpdate()
+
 		time.Sleep(animStepDuration)
 	}
 }
 
-func goodAnimation(item *dash.Item, callback func()) {
-	item.Status = dash.StatusGood
-	item.Progress = dash.NoProgress
-	item.StatusText = "Successful result text content"
+func goodAnimation(p *simProvider, id tile.ID) {
+	op := p.manager.BeginUpdate(p)
 
-	callback()
+	t := op.AddOrUpdateTile(id)
+	t.Clear()
+	t.SetState(tile.StateSuccess)
+	t.SetDescriptionText("Successful result text content")
+
+	op.EndUpdate()
+
 	time.Sleep(stateStepDuration)
 }
 
-func badAnimation(item *dash.Item, callback func()) {
-	item.Status = dash.StatusBad
-	item.Progress = dash.NoProgress
-	item.StatusText = "Unsuccessful result text content"
+func badAnimation(p *simProvider, id tile.ID) {
+	op := p.manager.BeginUpdate(p)
 
-	callback()
+	t := op.AddOrUpdateTile(id)
+	t.Clear()
+	t.SetState(tile.StateError)
+	t.SetDescriptionText("Unsuccessful result text content")
+
+	op.EndUpdate()
+
 	time.Sleep(stateStepDuration)
 }
 
-var animationSteps = []animation{pendingAnimation, goodAnimation, pendingAnimation, badAnimation}
+var animationSteps = []animationFunc{pendingAnimation, goodAnimation, pendingAnimation, badAnimation}
 
-func (p *simProvider) animate(item *dash.Item, index int) {
+func (p *simProvider) animate(index int, id tile.ID) {
 	index = index % len(animationSteps)
-	callback := func() { p.callback(p, p.items) }
 
 	for {
-		animationSteps[index](item, callback)
+		animationSteps[index](p, id)
 
 		index++
 		if index >= len(animationSteps) {
 			index = 0
 		}
 	}
-}
-
-func factory(config dash.Config, callback dash.Callback) (dash.Provider, error) {
-	p := new(simProvider)
-	p.callback = callback
-	count := 10
-	p.items = make([]*dash.Item, count)
-
-	for i := 0; i < count; i++ {
-		p.items[i] = new(dash.Item)
-	}
-
-	p.init()
-
-	return p, nil
-}
-
-func init() {
-	dash.RegisterFactory(key, factory)
 }
