@@ -59,12 +59,12 @@ Tile object
 Different tile types support different fields.
 More specifically, fields `titleText`, `descrText` and `statusValue` might be supported or not supported by various tile layouts.
 
-| Type              | Supported fields         | Providers                   | Description                                               |
-|-------------------|--------------------------|-----------------------------|-----------------------------------------------------------|
-| `text`            | `titleText`              |                             | Tile with one line of text                                |
-| `text-status`     | `titleText`, `descrText` | `check`                     | Tile with header and a line of text                       |
-| `text-status-2`   | `titleText`, `descrText` | `1cloud`                    | Tile with small header and a large line of text           |
-| `text-status-bar` | `titleText`, `descrText` | `sim`, `mongdb`, `teamcity` | Tile with header, a large line of text and a progress bar |
+| Type                | Supported fields                        | Providers                     | Description                                                 |
+| ------------------- | --------------------------------------- | ----------------------------- | ----------------------------------------------------------- |
+| `text`              | `titleText`                             |                               | Tile with one line of text                                  |
+| `text-status`       | `titleText`, `descrText`                | `check`                       | Tile with header and a line of text                         |
+| `text-status-2`     | `titleText`, `descrText`                | `1cloud`                      | Tile with small header and a large line of text             |
+| `text-status-bar`   | `titleText`, `descrText`, `statusValue` | `sim`, `mongdb`, `teamcity`   | Tile with header, a large line of text and a progress bar   |
 
 ### Tile sizes
 
