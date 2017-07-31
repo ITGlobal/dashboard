@@ -3,7 +3,7 @@ import * as cn from 'classnames'
 import * as moment from 'moment'
 
 import { ITile } from 'contracts'
-import { TileSize, TileStates } from './enums'
+import { TileSize, TileStates, TileTypes } from './enums'
 
 export interface IProps extends ITile {
 
@@ -42,12 +42,17 @@ export default function Tile(props: IProps) {
     }
 
     const difference = moment(Date.parse(props.updated)).fromNow();
-
+    const hasProgres = props.type === TileTypes.TextStatusBar && props.state === TileStates.Indeterminate;
+    
     return (
         <div className={cn('tile__container', tileSize)}>
             <div className={cn('tile__element', tileState)}>
                 <div className='tile__title'>{props.titleText}</div>
-                <div className="tile__content">{props.descrText}</div>
+                <div className={cn("tile__content", {'tile--content-small': hasProgres})}>{props.descrText}</div>
+                <div className={cn("tile__progress", {'tile--has-progress': hasProgres})}>
+                    {/* {props.statusValue}% */}
+                    <progress value={props.statusValue} max="100"/>
+                </div>
                 <div className="tile__footer">{`updated ${difference}`}</div>
             </div>
         </div>

@@ -29,22 +29,40 @@ body {
         height: 100%;
         color: white;
         font-family: 'Open Sans', sans-serif;
-        &>.tile__title {
-            text-align: center;
-            line-height: 0.33 * $tile-height;
-            font-size: 0.13 * $tile-height;
+    }
+    &__title {
+        text-align: center;
+        line-height: 0.33 * $tile-height;
+        font-size: 0.13 * $tile-height;
+    }
+    &__content {
+        height: 0.57 * $tile-height;
+        text-align: center;
+        font-size: 0.13 * $tile-height;
+    }
+    &__progress {
+        display: none;
+        text-align: center;
+        &>progress{
+            appearance: none;
+            margin: auto;
+            padding: 0;
+            width: 90%;
+            height: 50%;
+            vertical-align: middle;
+            &::-webkit-progress-value {
+                background-color: #006064;
+            }
+            &::-webkit-progress-bar {
+                background-color: #b2ebf2;
+            }
         }
-        &>.tile__content {
-            height: 0.57 * $tile-height;
-            text-align: center;
-            font-size: 0.13 * $tile-height;
-        }
-        &>.tile__footer {
-            height: 0.1 * $tile-height;
-            text-align: right;
-            font-size: 0.07 * $tile-height;
-            padding-right: $content-padding;
-        }
+    }
+    &__footer {
+        height: 0.1 * $tile-height;
+        text-align: right;
+        font-size: 0.07 * $tile-height;
+        padding-right: $content-padding;
     }
     &--size-x2 {
         width: 2 * $tile-width - 2 * $content-padding;
@@ -68,4 +86,15 @@ body {
     &--state-error {
         background: #f44336;
     }
+    &--content-small {
+        height: 0.27 * $tile-height;
+        font-size: 0.1 * $tile-height;
+    }
+    &--has-progress {
+        display: block;
+        height: 0.28 * $tile-height;
+        line-height: 0.28 * $tile-height;
+        font-size: 0.1 * $tile-height;
+    }
 }
+
