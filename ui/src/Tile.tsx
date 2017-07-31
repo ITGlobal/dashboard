@@ -53,7 +53,7 @@ export default function Tile(props: IProps) {
                     {/* {props.statusValue}% */}
                     <progress value={props.statusValue} max="100"/>
                 </div>
-                <div className="tile__footer">{`updated ${difference}`}</div>
+                <div className="tile__footer">{`${difference}`}</div>
             </div>
         </div>
     );

@@ -36,11 +36,13 @@ body {
         text-align: center;
         line-height: 0.33 * $tile-height;
         font-size: 0.13 * $tile-height;
+        background: rgba(0, 0, 0, 0.15);
     }
     &__content {
-        height: 0.50 * $tile-height;
+        height: 0.50 * $tile-height - 2 * $content-padding;
         text-align: center;
-        font-size: 0.13 * $tile-height;
+        font-size: 0.12 * $tile-height;
+        padding: $content-padding;
     }
     &__progress {
         display: none;
@@ -95,7 +97,7 @@ body {
         background: #f44336;
     }
     &--content-small {
-        height: 0.22 * $tile-height;
+        height: 0.22 * $tile-height - 2 * $content-padding;
         font-size: 0.1 * $tile-height;
     }
     &--has-progress {
