@@ -3,7 +3,7 @@ import * as cn from 'classnames'
 import * as _ from 'lodash'
 
 import { IDataJson, ITile } from 'contracts'
-import { TileStates } from './enums'
+import { TileStates, TileTypes } from './enums'
 import { getData } from './api'
 import TileComponent from './Tile'
 
@@ -35,18 +35,50 @@ class App extends React.Component<IProps, IAppState> {
     }
 
     getTiles() {
-        //getData<IDataJson>().then(resp => items = resp.tiles)
+        // let i;
+        // getData<IDataJson>().then(resp => i = resp.tiles);
+        // console.log(i);
         this.setState({ items: data['tiles'] });
     }
 
-    getStateNum(state: String) {
-        switch (state) {
-            case TileStates.Error: return 0;
-            case TileStates.Warning: return 10;
-            case TileStates.Indeterminate: return 20;
-            case TileStates.Success: return 30;
-            default: return 100;
+    getStateNum(tile: ITile): number {
+        let res = 0;
+        switch (tile.state) {
+            case TileStates.Error:
+                res += 0;
+                break;
+            case TileStates.Warning:
+                res += 100;
+                break;
+            case TileStates.Indeterminate:
+                res += 200;
+                break;
+            case TileStates.Success:
+                res += 300;
+                break;
+            default: res += 900;
+                break;
         }
+
+        switch (tile.type) {
+            case TileTypes.Text:
+                res += 0;
+                break;
+            case TileTypes.TextStatus:
+                res += 2000;
+                break;
+            case TileTypes.TextStatus2:
+                res += 1000;
+                break;
+            case TileTypes.TextStatusBar:
+                res += 3000;
+                break;
+            default: 
+                res += 9000;
+                break;
+        }
+
+        return res;
     }
 
     componentDidMount() {
@@ -57,20 +89,14 @@ class App extends React.Component<IProps, IAppState> {
         const { items } = this.state;
         const groups = Object.values(_.groupBy(items, 'type'));
         return (
-            <div className="dashboard__container">
+            <div className="tiles__container">
                 {
                     items.length > 0 ?
-                        groups.map((group, i) => {
-                            return (<div className="tiles__container" key={i}>{
-                                group ?
-                                    group
-                                        .sort((x: ITile, y: ITile) => this.getStateNum(x.state) - this.getStateNum(y.state))
-                                        .map((item) => <TileComponent {...item} key={item.id} />)
-                                    : ''
-                            }</div>)
-                        })
-                        :
-                        ''
+                        items
+                            .sort((x: ITile, y: ITile) => x.titleText.localeCompare(y.titleText))
+                            .sort((x: ITile, y: ITile) => this.getStateNum(x) - this.getStateNum(y))
+                            .map((item) => <TileComponent {...item} key={item.id} />)
+                        : ''
                 }
             </div>
         )

@@ -25,7 +25,7 @@
         // Tile with one line of text
         Text = 'text',
         // Tile with header and a line of text
-        TestStatus = 'text-status',
+        TextStatus = 'text-status',
         // Tile with small header and a large line of text
         TextStatus2 = 'text-status-2',
         // Tile with header, a large line of text and a progress bar

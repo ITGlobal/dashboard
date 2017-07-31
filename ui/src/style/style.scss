@@ -7,17 +7,13 @@ body {
     background: #90A4AE;
 }
 
-.dashboard__container {
-    display: flex;
-}
-
 .tiles {
     &__container {
         display: flex;
         justify-content: flex-start;
         flex-flow: row wrap;
         padding: $content-padding;
-        border: 1px solid $border-color;
+        //border: 1px solid $border-color;
     }
 }
 
