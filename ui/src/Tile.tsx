@@ -47,8 +47,8 @@ export default function Tile(props: IProps) {
     return (
         <div className={cn('tile__container', tileSize)}>
             <div className={cn('tile__element', tileState)}>
-                <div className='tile__title'>{props.titleText}</div>
-                <div className={cn("tile__content", {'tile--content-small': hasProgres})}>{props.descrText}</div>
+                 <div className='tile__title'>{props.titleText}</div> 
+                 <div className={cn("tile__content", {'tile--content-small': hasProgres})}>{props.descrText}</div> 
                 <div className={cn("tile__progress", {'tile--has-progress': hasProgres})}>
                     {/* {props.statusValue}% */}
                     <progress value={props.statusValue} max="100"/>

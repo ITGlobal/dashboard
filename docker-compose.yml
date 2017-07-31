@@ -10,6 +10,7 @@ services:
     
     volumes: 
       - ./config:/opt/dashboard
+      - ./ui/dist:/opt/dashboard/www
 
     ports:
       - 8000:8000
