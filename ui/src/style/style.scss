@@ -1,0 +1,75 @@
+$tile-width: 150px;
+$tile-height: 150px;
+$content-padding: 5px;
+$border-color: #546e7a;
+
+body {
+    background: #90A4AE;
+}
+
+.dashboard__container {
+    display: flex;
+}
+
+.tiles {
+    &__container {
+        display: flex;
+        justify-content: flex-start;
+        flex-flow: row wrap;
+        padding: $content-padding;
+        border: 1px solid $border-color;
+    }
+}
+
+.tile {
+    &__container {
+        width: $tile-width - 2 * $content-padding;
+        height: $tile-height;
+        flex: 0 0 auto;
+        padding: $content-padding;
+    }
+    &__element {
+        border: 1px solid $border-color;
+        height: 100%;
+        color: white;
+        font-family: 'Open Sans', sans-serif;
+        &>.tile__title {
+            text-align: center;
+            line-height: 0.33 * $tile-height;
+            font-size: 0.13 * $tile-height;
+        }
+        &>.tile__content {
+            height: 0.57 * $tile-height;
+            text-align: center;
+            font-size: 0.13 * $tile-height;
+        }
+        &>.tile__footer {
+            height: 0.1 * $tile-height;
+            text-align: right;
+            font-size: 0.07 * $tile-height;
+            padding-right: $content-padding;
+        }
+    }
+    &--size-x2 {
+        width: 2 * $tile-width - 2 * $content-padding;
+    }
+    &--size-x4 {
+        width: 2 * $tile-width - 2 * $content-padding;
+        height: 2 * $tile-height - 2 * $content-padding;
+    }
+    &--state-default {
+        background: #9e9e9e;
+    }
+    &--state-success {
+        background: #4caf50;
+    }
+    &--state-indeterminate {
+        background: #00bcd4;
+    }
+    &--state-warning {
+        background: #ff9800;
+    }
+    &--state-error {
+        background: #f44336;
+    }
+}
