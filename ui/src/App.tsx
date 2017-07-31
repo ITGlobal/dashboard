@@ -7,7 +7,7 @@ import { TileStates, TileTypes } from './enums'
 import { getData } from './api'
 import TileComponent from './Tile'
 
-import * as data from './data.json'
+
 
 import './style/style.scss';
 
@@ -35,10 +35,7 @@ class App extends React.Component<IProps, IAppState> {
     }
 
     getTiles() {
-        // let i;
-        // getData<IDataJson>().then(resp => i = resp.tiles);
-        // console.log(i);
-        this.setState({ items: data['tiles'] });
+        getData<IDataJson>().then(resp => this.setState({ items: resp.tiles }));
     }
 
     getStateNum(tile: ITile): number {

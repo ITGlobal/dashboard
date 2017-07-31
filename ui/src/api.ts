@@ -1,19 +1,25 @@
 import { ITile } from 'contracts';
 
-const endPoint = "http://5.200.55.80:8000/data.json"
+import * as data from './data.json'
+
+declare var ENDPOINT;
 
 class ResponseError extends Error {
     response: any
 }
 
 export function getData<T>(): Promise<T> {
-    return fetch(
-        endPoint,
-        {
-            mode: 'no-cors'
-        },
-    ).then(checkStatus)
-    .then(respToJson);
+    if (ENDPOINT) {
+        return fetch(
+            ENDPOINT,
+            {
+                mode: 'no-cors'
+            },
+        ).then(checkStatus)
+            .then(respToJson);
+    }
+
+    return Promise.resolve(data as any);
 }
 
 const respToJson = response => response.json();

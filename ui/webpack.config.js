@@ -5,7 +5,7 @@ const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = () => {
+module.exports = (env) => {
     const src = path.join(__dirname, 'src');
     const dist = path.join(__dirname, 'dist');
 
@@ -75,6 +75,9 @@ module.exports = () => {
                 template: 'template/index.html',
                 chunks: ['bundle']
             }),
+            new webpack.DefinePlugin({
+                ENDPOINT: env === 'prod' ? '\"http://localhost:8000/data.json\"' : null
+            })
         ]
     }
 };

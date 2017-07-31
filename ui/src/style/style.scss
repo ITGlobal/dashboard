@@ -63,6 +63,9 @@ body {
         text-align: right;
         font-size: 0.07 * $tile-height;
         padding-right: $content-padding;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     &--size-x2 {
         width: 2 * $tile-width - 2 * $content-padding;
