@@ -20,5 +20,6 @@ RUN mkdir -p /opt/dashboard
 WORKDIR /opt/dashboard
 COPY --from=backend /go/src/github.com/itglobal/dashboard/dashboard /opt/dashboard
 COPY --from=frontend /app/dist /opt/dashboard/www
+RUN chmod +x /opt/dashboard/dashboard
 
-ENTRYPOINT "/opt/dashboard"
+ENTRYPOINT "/opt/dashboard/dashboard"
