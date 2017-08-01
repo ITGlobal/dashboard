@@ -1,10 +1,17 @@
 # Build backend
 FROM armhf/golang:1.8 as backend
+RUN go get -v github.com/gorilla/mux && \
+    go get -v github.com/gorilla/websocket && \
+    go get -v github.com/kpango/glg && \
+    go get -v github.com/mkideal/cli && \
+    go get -v github.com/satori/go.uuid && \
+    go get -v gopkg.in/mgo.v2 && \
+    go get -v github.com/kapitanov/go-teamcity
 RUN mkdir -p /go/src/github.com/itglobal/dashboard
 WORKDIR /go/src/github.com/itglobal/dashboard
 COPY . .
-RUN go get
-RUN go build
+RUN go get -v
+RUN go build -v -x
 
 # Build frontend
 FROM hypriot/rpi-node:8.1 as frontend
@@ -15,11 +22,11 @@ RUN yarn install
 RUN npm run build:prod
 
 # Application container
-FROM armhf/alpine:latest
-RUN mkdir -p /opt/dashboard
-WORKDIR /opt/dashboard
-COPY --from=backend /go/src/github.com/itglobal/dashboard/dashboard /opt/dashboard
-COPY --from=frontend /app/dist /opt/dashboard/www
-RUN chmod +x /opt/dashboard/dashboard
+FROM resin/rpi-raspbian:wheezy
+RUN mkdir -p /app
+WORKDIR /app
+COPY --from=backend /go/src/github.com/itglobal/dashboard/dashboard /app
+COPY --from=frontend /app/dist /app/www
+RUN chmod +x /app/dashboard
 
-ENTRYPOINT "/opt/dashboard/dashboard"
+CMD "/app/dashboard"

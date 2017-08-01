@@ -16,4 +16,4 @@ services:
 
     environment: 
       - DASH_ENDPOINT=0.0.0.0:8000
-      - DASH_CONFIG=/opt/dashboard/dashboard.json
+      - DASH_CONFIG=/app/dashboard.json
