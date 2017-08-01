@@ -1,8 +1,0 @@
-from node:8.2.1
-
-RUN mkdir -p /go/src/github.com/itglobal/dashboard-ui
-WORKDIR /go/src/github.com/itglobal/dashboard-ui
-COPY . .
-
-RUN npm install
-CMD ["npm", "build:prod"]

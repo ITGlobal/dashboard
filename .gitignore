@@ -27,3 +27,6 @@ _testmain.go
 !config/.gitkeep
 config/**
 debug
+
+dashboard
+dashboard.exe

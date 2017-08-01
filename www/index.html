@@ -1,116 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>Dashboard</title>
-    <link href="/bootstrap-theme.min.css" rel="stylesheet">
-    <link href="/layout.css" rel="stylesheet">
-    <link href="/colors.css" rel="stylesheet">
-    <script src="/jquery.min.js"></script>
-    <script src="/mustache.min.js"></script>
-    <script src="/moment.min.js"></script>
-    <script>
-        function renderTile(tile) {
-            tile.updatedTime = moment(tile.updated).startOf('minute').fromNow();
-
-            var template = '';
-            switch (tile.type) {
-                case 'text':
-                    template =
-                        '<div class="tile type-text state-{{state}} size-{{size}}">\n' +
-                        '  <div class="titleText">{{titleText}}</div>\n' +
-                        '  <div class="source">[{{source}}]</div>\n' +
-                        '  <div class="updated">{{updatedTime}}</div>\n' +
-                        '</div>\n';
-                    break;
-                case 'text-status':
-                    template =
-                        '<div class="tile type-text-status state-{{state}} size-{{size}}">\n' +
-                        '  <div class="titleText">{{titleText}}</div>\n' +
-                        '  <div class="descrText">{{descrText}}</div>\n' +
-                        '  <div class="source">[{{source}}]</div>\n' +
-                        '  <div class="updated">{{updatedTime}}</div>\n' +
-                        '</div>\n';
-                    break;
-                case 'text-status-2':
-                    template =
-                        '<div class="tile type-text-status-2 state-{{state}} size-{{size}}">\n' +
-                        '  <div class="titleText">{{titleText}}</div>\n' +
-                        '  <div class="descrText">{{descrText}}</div>\n' +
-                        '  <div class="source">[{{source}}]</div>\n' +
-                        '  <div class="updated">{{updatedTime}}</div>\n' +
-                        '</div>\n';
-                    break;
-                case 'text-status-bar':
-                    if (!tile.statusValue) {
-                        template =
-                            '<div class="tile type-text-status-bar state-{{state}} size-{{size}}">\n' +
-                            '  <div class="titleText">{{titleText}}</div>\n' +
-                            '  <div class="descrText">{{descrText}}</div>\n' +
-                            '  <div class="source">[{{source}}]</div>\n' +
-                            '  <div class="updated">{{updatedTime}}</div>\n' +
-                            '</div>\n';
-                    } else {
-                        template =
-                            '<div class="tile type-text-status-bar state-{{state}} size-{{size}}">\n' +
-                            '  <div class="titleText">{{titleText}}</div>\n' +
-                            '  <div class="descrText">{{descrText}}</div>\n' +
-                            '  <div class="progressBar">\n' +
-                            '    <div class="fill" style="width: {{statusValue}}%"></div>\n' +
-                            '  </div>\n' +
-                            '  <div class="source">[{{source}}]</div>\n' +
-                            '  <div class="updated">{{updatedTime}}</div>\n' +
-                            '</div>\n';
-                    }
-                    break;
-                default:
-                    template = '<div class="tile type-text-status state-error size-1x"><div class="titleText">Error!</div><div class="descrText">Unknown tile type: {{type}}</div></div>';
-                    break;
-            }
-
-            var markup = Mustache.render(template, tile);
-            return markup;
-        }
-
-
-        $(function() {
-            var container = $('.tile-container');
-
-            function fetchOnce() {
-                return $.getJSON('/data.json')
-                    .then(function(json) {
-                        var html = '';
-                        for (var i = 0; i < json.tiles.length; i++) {
-                            html += renderTile(json.tiles[i]);
-                        }
-                        container.html(html);
-                    });
-            }
-
-            function fetchLoop() {
-                fetchOnce()
-                    .then(function() {
-                        setTimeout(function() {
-                            fetchLoop();
-                        }, 1000);
-                    });
-            }
-
-            fetchLoop();
-        });
-    </script>
+    <meta charset="UTF-8">
+    <title>ITGlobal Dashboard</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
 </head>
 
 <body>
+    <div id="root">Loading...</div>
 
-    <div class="tile-container">
-        <div class="tile-preloader">Loading...</div>
-    </div>
+    <script src="bundle.js"></script>
 </body>
 
 </html>
