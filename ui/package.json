@@ -28,6 +28,7 @@
     "@types/react": "^15.0.38",
     "autoprefixer": "^7.1.2",
     "classnames": "^2.2.5",
+    "core-js": "^2.4.1",
     "css-loader": "^0.28.4",
     "html-webpack-plugin": "^2.29.0",
     "lodash": "^4.17.4",

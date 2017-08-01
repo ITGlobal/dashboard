@@ -19,7 +19,7 @@ RUN mkdir -p /app
 WORKDIR /app
 COPY /ui /app
 RUN yarn install
-RUN npm run build:prod
+RUN yarn run build:prod
 
 # Application container
 FROM armv7/armhf-ubuntu:xenial

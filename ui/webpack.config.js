@@ -10,7 +10,7 @@ module.exports = (env) => {
     const dist = path.join(__dirname, 'dist');
 
     return {
-        entry: './src/index.tsx',
+        entry: ['core-js/shim', 'whatwg-fetch', './src/index.tsx'],
 
         output: {
             //filename: 'bundle.[chunkhash].js',
@@ -40,7 +40,17 @@ module.exports = (env) => {
                 include: [
                     src,
                 ],
-                use: ['react-hot-loader', 'ts-loader']
+                use: [
+                    'react-hot-loader',
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            compilerOptions: {
+                                target: env === 'prod' ? 'es5' : 'es2017'
+                            }
+                        }
+                    }
+                ]
             }, {
                 test: /\.scss$/,
                 use: [
@@ -64,7 +74,7 @@ module.exports = (env) => {
                         }
                     }
                 ]
-            }, ]
+            },]
         },
 
         devtool: 'eval-source-map',
