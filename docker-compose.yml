@@ -9,11 +9,11 @@ services:
     restart: always
     
     volumes: 
-      - ./config:/opt/dashboard
+      - ./config:/app/config
 
     ports:
       - 8000:8000
 
     environment: 
       - DASH_ENDPOINT=0.0.0.0:8000
-      - DASH_CONFIG=/app/dashboard.json
+      - DASH_CONFIG=/app/config/dashboard.json
