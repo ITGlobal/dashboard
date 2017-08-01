@@ -1,0 +1,110 @@
+$tile-width: 150px;
+$tile-height: 150px;
+$content-padding: 5px;
+$border-color: #546e7a;
+
+body {
+    background: #212121;
+}
+
+.tiles {
+    &__container {
+        display: flex;
+        justify-content: flex-start;
+        flex-flow: row wrap;
+        padding: $content-padding;
+        //border: 1px solid $border-color;
+    }
+}
+
+.tile {
+    &__container {
+        //min-width: $tile-width;
+        height: $tile-height;
+        flex: 1;
+        flex-basis: $tile-width;
+        padding: $content-padding;
+        box-sizing: border-box;
+    }
+    &__element {
+        border: 1px solid $border-color;
+        height: 100%;
+        color: white;
+        font-family: 'Open Sans', sans-serif;
+    }
+    &__title {
+        text-align: center;
+        line-height: 0.33 * $tile-height;
+        font-size: 0.13 * $tile-height;
+        background: rgba(0, 0, 0, 0.15);
+    }
+    &__content {
+        height: 0.50 * $tile-height - 2 * $content-padding;
+        text-align: center;
+        font-size: 0.12 * $tile-height;
+        padding: $content-padding;
+    }
+    &__progress {
+        display: none;
+        text-align: center;
+        &>progress{
+            appearance: none;
+            margin: auto;
+            padding: 0;
+            width: 90%;
+            height: 50%;
+            vertical-align: middle;
+            &::-webkit-progress-value {
+                background-color: #006064;
+            }
+            &::-webkit-progress-bar {
+                background-color: #b2ebf2;
+            }
+        }
+    }
+    &__footer {
+        height: 0.1 * $tile-height;
+        text-align: right;
+        font-size: 0.07 * $tile-height;
+        padding-right: $content-padding;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    &--size-x2 {
+        //width: 2 * $tile-width - 2 * $content-padding;
+        flex: 2;
+        flex-basis: 2 * $tile-width;
+    }
+    &--size-x4 {
+        //width: 2 * $tile-width - 2 * $content-padding;
+        height: 2 * $tile-height - 2 * $content-padding;
+        flex: 2;
+    }
+    &--state-default {
+        background: #9e9e9e;
+    }
+    &--state-success {
+        background: #4caf50;
+    }
+    &--state-indeterminate {
+        background: #00bcd4;
+    }
+    &--state-warning {
+        background: #ff9800;
+    }
+    &--state-error {
+        background: #f44336;
+    }
+    &--content-small {
+        height: 0.22 * $tile-height - 2 * $content-padding;
+        font-size: 0.1 * $tile-height;
+    }
+    &--has-progress {
+        display: block;
+        height: 0.28 * $tile-height;
+        line-height: 0.28 * $tile-height;
+        font-size: 0.1 * $tile-height;
+    }
+}
+

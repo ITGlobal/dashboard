@@ -1,0 +1,388 @@
+﻿{
+    "version": "5389b957-756a-4caf-82f6-d1febad3f93a",
+    "tiles": [
+        {
+            "id": "16c6d9c2-c0f6-4bd7-827e-aebadd7d44cb",
+            "updated": "2017-07-17T09:44:23.979375559Z",
+            "source": "1cloud",
+            "type": "text-status-2",
+            "size": "1x",
+            "state": "success",
+            "titleText": "1Cloud",
+            "descrText": "Paid until 25 Sep 2017 (60548 RUB)",
+            "statusValue": 69
+        },
+        {
+            "id": "3494df29-ad87-4221-aa7b-8e0c33f88d30",
+            "updated": "2017-07-17T09:47:25.973338916Z",
+            "source": "check",
+            "type": "text-status",
+            "size": "1x",
+            "state": "success",
+            "titleText": "ow.net",
+            "descrText": "[09:47:25] 200 OK"
+        },
+        {
+            "id": "5c7b245c-b408-4b9a-96c5-cee4a11b6358",
+            "updated": "2017-07-17T09:47:24.190446761Z",
+            "source": "check",
+            "type": "text-status",
+            "size": "1x",
+            "state": "success",
+            "titleText": "itg.ru",
+            "descrText": "[09:47:24] 200 OK"
+        },
+        {
+            "id": "6e1dd8d2-5994-4988-a434-324d8b2e95f9",
+            "updated": "2017-07-17T09:47:26.741665317Z",
+            "source": "check",
+            "type": "text-status",
+            "size": "1x",
+            "state": "success",
+            "titleText": "keys-1.itg.ru",
+            "descrText": "[09:47:26] 200 OK"
+        },
+        {
+            "id": "741f86e8-6c8c-404d-b870-f2787440ea06",
+            "updated": "2017-07-17T09:47:26.294328089Z",
+            "source": "check",
+            "type": "text-status",
+            "size": "1x",
+            "state": "warning",
+            "titleText": "upd-1.itg.ru",
+            "descrText": "[09:47:26] 200 OK"
+        },
+        {
+            "id": "9a1642c6-4904-419c-9c3c-c1ab308197d7",
+            "updated": "2017-07-17T09:47:25.81330492Z",
+            "source": "check",
+            "type": "text-status",
+            "size": "1x",
+            "state": "success",
+            "titleText": "data2.itg.ru",
+            "descrText": "[09:47:25] 200 OK"
+        },
+        {
+            "id": "dfbc7efb-85f9-46a2-be22-87afd9f78bd0",
+            "updated": "2017-07-17T09:47:27.116708017Z",
+            "source": "check",
+            "type": "text-status",
+            "size": "1x",
+            "state": "success",
+            "titleText": "diag-1.itg.ru",
+            "descrText": "[09:47:27] 200 OK"
+        },
+        {
+            "id": "f836bd6f-d42a-4be7-9cd6-0a55a60e9004",
+            "updated": "2017-07-17T09:47:25.395700583Z",
+            "source": "check",
+            "type": "text-status",
+            "size": "1x",
+            "state": "success",
+            "titleText": "data1.itg.ru",
+            "descrText": "[09:47:25] 200 OK"
+        },
+        {
+            "id": "05581c66-2c40-4915-84da-6c5db222d4d8",
+            "updated": "2017-07-17T09:44:26.930408549Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "macloud_dev",
+            "descrText": "1.0.72-dev: Success"
+        },
+        {
+            "id": "0e548956-de19-4e9f-b62b-372393134213",
+            "updated": "2017-07-17T09:44:26.93024756Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "indeterminate",
+            "titleText": "optionworkshop - test",
+            "descrText": "17.6.1513: Tests passed: 1377, ignored: 353",
+            "statusValue": 50
+        },
+        {
+            "id": "1109b3fc-40fe-4811-8121-6bd9e6c9fc1f",
+            "updated": "2017-07-17T09:44:26.929976625Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "indeterminate",
+            "titleText": "Robobanker-Prod",
+            "descrText": "7: Tests passed: 1",
+            "statusValue": 30
+        },
+        {
+            "id": "2792a33a-775d-49c9-a24c-4f53f9e34e2a",
+            "updated": "2017-07-17T09:44:26.930308862Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "WpfToolkit-Master",
+            "descrText": "2.4.0.26: Success"
+        },
+        {
+            "id": "31461485-4d8e-4d71-b97b-9280b1901535",
+            "updated": "2017-07-17T09:44:26.929999594Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "oow - release",
+            "descrText": "0.0.919-release-2f851103: Tests passed: 221, ignored: 2"
+        },
+        {
+            "id": "31a31292-18d8-4913-b440-a138f5092d84",
+            "updated": "2017-07-17T09:44:26.9299635Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "Compass - Dev",
+            "descrText": "1.7.1-413: Tests passed: 380, ignored: 5"
+        },
+        {
+            "id": "3f0a5973-3b88-447a-b06a-3e8b65d8ba3b",
+            "updated": "2017-07-17T09:44:26.930010583Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "warning",
+            "titleText": "optionworkshop - release",
+            "descrText": "17.6.1533: Tests passed: 1377, ignored: 353"
+        },
+        {
+            "id": "5ca4cd56-3b2f-49e0-bb2a-5c2acf1bdf69",
+            "updated": "2017-07-17T09:44:26.930032823Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "docs engine - main",
+            "descrText": "1.1.26: Tests passed: 17"
+        },
+        {
+            "id": "5ebe06a6-70ba-4f07-89df-5b8d0899b78a",
+            "updated": "2017-07-17T09:44:26.930320476Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "cgate - master",
+            "descrText": "1.0.121-master-f1b546c: Success"
+        },
+        {
+            "id": "6dc1d0fd-2185-41e2-94f5-453f8943327d",
+            "updated": "2017-07-17T09:44:26.930214488Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "SciChart-Master",
+            "descrText": "4.2.1.9336: Success"
+        },
+        {
+            "id": "6e1e4d77-58fb-456c-9f1e-ba6653195a6e",
+            "updated": "2017-07-17T09:44:26.930107145Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "symbol service - main",
+            "descrText": "4.2.171: Tests passed: 247, ignored: 1"
+        },
+        {
+            "id": "737f3a3a-f878-4e62-810c-5e9534862579",
+            "updated": "2017-07-17T09:44:26.930273966Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "DevExpress-Master",
+            "descrText": "14.2.14.23: Success"
+        },
+        {
+            "id": "75611dac-797b-4885-91f2-04ce517e115f",
+            "updated": "2017-07-17T09:44:26.930225581Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "OTC - RELEASE TEST",
+            "descrText": "1.15.1994-release-094d458: Tests passed: 1070, ignored: 73"
+        },
+        {
+            "id": "8488eaaa-9939-486f-9dab-eefffc438633",
+            "updated": "2017-07-17T09:44:26.930176051Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "OTC - RELEASE",
+            "descrText": "1.15.1993-release-094d458: Success"
+        },
+        {
+            "id": "88bc59a8-00da-48ca-be54-f4b397a07ad1",
+            "updated": "2017-07-17T09:44:26.930420215Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "macloud_release",
+            "descrText": "1.0.69-rel: Success"
+        },
+        {
+            "id": "8fa1584f-4f01-4613-bb58-9640855fd0a5",
+            "updated": "2017-07-17T09:44:26.930070739Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "Compass - Release",
+            "descrText": "1.7.1-209: Tests passed: 380, ignored: 5"
+        },
+        {
+            "id": "90c0ec19-9704-44f2-9f94-e9de13de8e4f",
+            "updated": "2017-07-17T09:44:26.930021312Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "promise - prod",
+            "descrText": "1.6.435: Tests passed: 19"
+        },
+        {
+            "id": "983bf464-57fd-431c-8684-fbe6b0e75c65",
+            "updated": "2017-07-17T09:44:26.930084541Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "optionworkshop - dev",
+            "descrText": "17.6.1534: Tests passed: 1377, ignored: 353"
+        },
+        {
+            "id": "ae4f077b-05ea-48bf-97bb-7b57ed39e6c8",
+            "updated": "2017-07-17T09:44:26.93028532Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "RR_RELEASE",
+            "descrText": "1.0.362: Tests failed: 6, passed: 621"
+        },
+        {
+            "id": "b9c20179-faa9-496b-977b-3cb603992ed6",
+            "updated": "2017-07-17T09:44:26.930095791Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "Robobanker-Test",
+            "descrText": "73: Tests passed: 1"
+        },
+        {
+            "id": "c1c61975-fe14-4aa8-87ac-327cfc7ce28c",
+            "updated": "2017-07-17T09:44:26.929988604Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "NSD WebClient Master",
+            "descrText": "7.0.67-r39.0-fbbd499: Success"
+        },
+        {
+            "id": "c75d5d7d-c66c-4106-ae7c-2a3a2434f403",
+            "updated": "2017-07-17T09:44:26.930258654Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "error",
+            "titleText": "promise - dev",
+            "descrText": "1.6.430: Tests failed: 6 (6 new), passed: 13"
+        },
+        {
+            "id": "cd579dd8-1701-449b-b169-7385461cb9bc",
+            "updated": "2017-07-17T09:44:26.930367143Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "error",
+            "titleText": "OTC - TEST",
+            "descrText": "1.15.1995-test-34d781a: {MSBuild failed with error level 1.Message}"
+        },
+        {
+            "id": "d89c45fa-1911-4cbc-af7d-369e3d1f20ca",
+            "updated": "2017-07-17T09:44:26.930201936Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "optionworkshop - 13",
+            "descrText": "721: Success"
+        },
+        {
+            "id": "dcd11e31-1aee-4c1b-abae-7156024bdbea",
+            "updated": "2017-07-17T09:44:26.930236571Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "hermes_master",
+            "descrText": "124: Tests passed: 48"
+        },
+        {
+            "id": "dfc730df-b663-4a4c-8276-0fc6704bc803",
+            "updated": "2017-07-17T09:44:26.930396569Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "error",
+            "titleText": "hermes_feature_branches",
+            "descrText": "No build are found"
+        },
+        {
+            "id": "e1dbb563-6af4-4145-b1ad-ce2a949629a5",
+            "updated": "2017-07-17T09:44:26.930296622Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "oow - dev",
+            "descrText": "0.0.918-dev-2f851103: Tests passed: 279, ignored: 3"
+        },
+        {
+            "id": "e56ef3e1-ae32-4eba-b7db-4bb331bd3b3a",
+            "updated": "2017-07-17T09:44:26.930190269Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "master",
+            "descrText": "10: Tests passed: 39"
+        },
+        {
+            "id": "fb7be8c6-9cdb-4a55-8788-c43c8fc51cd4",
+            "updated": "2017-07-17T09:44:26.9300435Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "RR_TEST",
+            "descrText": "1.0.361: Tests failed: 6, passed: 621"
+        },
+        {
+            "id": "fd067909-b100-4121-a729-99b8097c3bc0",
+            "updated": "2017-07-17T09:44:26.930119436Z",
+            "source": "teamcity",
+            "type": "text-status-bar",
+            "size": "2x",
+            "state": "success",
+            "titleText": "NGit",
+            "descrText": "1.0.0.11: Success"
+        }
+    ]
+}
