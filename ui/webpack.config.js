@@ -76,7 +76,7 @@ module.exports = (env) => {
                 chunks: ['bundle']
             }),
             new webpack.DefinePlugin({
-                ENDPOINT: env === 'prod' ? '\"http://localhost:8000/data.json\"' : null
+                ENDPOINT: env === 'prod' ? '\"/data.json\"' : null
             })
         ]
     }
