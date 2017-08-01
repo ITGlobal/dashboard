@@ -22,7 +22,7 @@ RUN yarn install
 RUN npm run build:prod
 
 # Application container
-FROM debian:wheezy
+FROM ubuntu:xenial
 RUN mkdir -p /app
 WORKDIR /app
 COPY --from=backend /go/src/github.com/itglobal/dashboard/dashboard /app
