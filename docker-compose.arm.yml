@@ -18,3 +18,8 @@ services:
     environment: 
       - DASH_ENDPOINT=0.0.0.0:8000
       - DASH_CONFIG=/app/config/dashboard.json
+
+    logging: 
+      driver: json-file
+      options: 
+        max-size: 100m
