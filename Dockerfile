@@ -18,8 +18,8 @@ FROM node:8.1 as frontend
 RUN mkdir -p /app
 WORKDIR /app
 COPY /ui /app
-RUN yarn install
-RUN yarn run build:prod
+# RUN yarn install
+# RUN yarn run build:prod
 
 # Application container
 FROM ubuntu:xenial
