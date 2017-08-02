@@ -42,7 +42,7 @@ func NewServer(parameters *ServerParameters) (Server, error) {
 	}
 
 	server.initializeHTTP()
-	server.initializeProviders()
+	go server.initializeProviders()
 
 	return server, nil
 }
