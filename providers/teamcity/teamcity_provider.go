@@ -18,6 +18,7 @@ type teamcityDataItem struct {
 	DescriptionText string
 	HasProgress     bool
 	Progress        int
+	IsVisible       bool
 }
 
 type teamcityData map[string]*teamcityDataItem
@@ -98,6 +99,7 @@ func (p *teamcityProvider) fetchBuilds() (fetchBuildsResult, error) {
 			return frGotNewProjects, nil
 		}
 
+		item.IsVisible = true
 		setupDashItem(&build, item)
 	}
 
@@ -165,11 +167,13 @@ func (p *teamcityProvider) fetchItemStatus(item *teamcityDataItem) {
 	l := len(builds)
 	if l == 0 {
 		log.Warnf("[teamcity] fetchItemStatus(%s) -> no builds are found", item.BuildTypeID)
-		item.State = tile.StateError
+		item.State = tile.StateDefault
 		item.DescriptionText = "No build are found"
+		item.IsVisible = false
 		return
 	}
 
+	item.IsVisible = true
 	setupDashItem(&builds[0], item)
 }
 
@@ -184,6 +188,11 @@ func (p *teamcityProvider) syncItems() {
 	}
 
 	for _, item := range p.itemsByID {
+		if !item.IsVisible {
+			u.RemoveTile(item.ID)
+			continue
+		}
+
 		t := u.AddOrUpdateTile(item.ID)
 
 		t.SetType(tile.TypeTextStatusProgress)
@@ -205,6 +214,8 @@ func setupDashItem(build *teamcity.Build, item *teamcityDataItem) {
 	} else {
 		item.DescriptionText = build.Number
 	}
+
+	item.IsVisible = true
 
 	switch build.Status {
 	case teamcity.StatusSuccess:
