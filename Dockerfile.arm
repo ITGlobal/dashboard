@@ -23,6 +23,7 @@ COPY /ui /app
 
 # Application container
 FROM armv7/armhf-ubuntu:xenial
+RUN apt-get update && apt-get install -y ca-certificates
 RUN mkdir -p /app
 WORKDIR /app
 COPY --from=backend /go/src/github.com/itglobal/dashboard/dashboard /app
